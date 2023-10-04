@@ -1,24 +1,25 @@
 from load_model import model_load
-#from translate import Traductor
-#from scrapper import scrapper
 from fastapi import FastAPI
-'''
+from scrapper_controller import router as scrapper_router
+from fastapi import Depends, Request
+from translate import Traductor
+from scrapper import Scrapper
 
-URL = "https://spartangeek.com/blog/cu%C3%A1nto-cuesta-una-pc-gamer-en-m%C3%A9xico"
-scrapper=scrapper()
-article=scrapper.read_url(URL)
-chunks=scrapper.text_processor(article)
-resume=scrapper.summarize(chunks)
-print(resume)
-
-traductor = Traductor()
-texto = traductor.Traducir(resume)
-
-prediction=model.predict([texto])
-print(prediction)
-'''
 
 app = FastAPI()
+
+
+async def get_model(request:Request):
+    return request.app.state.model
+
+async def get_traductor(request:Request):
+    return request.app.state.traductor
+
+async def get_scrapper(request:Request):
+    return request.app.state.scrapper
+
+
+
 
 @app.on_event("startup")
 def load_model():
@@ -28,6 +29,18 @@ def load_model():
     model = model_load()
     print("Model loaded successfully!")
     app.state.model = model
+    
+@app.on_event("startup")
+def load_traductor():
+    traductor=Traductor()
+    app.state.traductor = traductor
+    
+@app.on_event("startup")    
+def load_scrapper():
+    scrapper=Scrapper()
+    app.state.scrapper= scrapper
+    
+
 
 
 
@@ -37,16 +50,12 @@ def shutdown_event():
     print("Shutting down the application...")
   
 
-app.include_router(
-    users_router, 
-    tags=["users"], 
-    prefix="/users"
-)
+
 
 app.include_router(
-    iris_router, 
-    tags=["iris"],
-    prefix="/iris"
+    scrapper_router, 
+    tags=["scrapper"],
+    prefix="/scrapper"
 )
 
 @app.get("/hi")

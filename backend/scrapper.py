@@ -4,7 +4,7 @@ import requests
 import tensorflow as tf
 
 
-class scrapper(object):
+class Scrapper(object):
     
     def __init__(self): 
 
