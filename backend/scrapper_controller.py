@@ -7,13 +7,12 @@ from translate import Traductor
 from fastapi import Request, Depends
 import typing
 import numpy as np
+from typing import List
 
-class link(BaseModel):
+
+
+class URLItem(BaseModel):
     link: str
-    
-    def split(self):
-        return split()
-        
 
 router = InferringRouter()
 
@@ -38,8 +37,9 @@ class scrapper_controller:
     
     @router.post("/predict")
     
-    def predict(self,URLS:typing.List[link]):
-        URLS=[URL.split(':') for URL in URLS]
+    def predict(self,URLS:List[URLItem]):
+        #URL= np.array([URL.to_numpy() for URL in URLS])
+        URLS = URLS[0].link
         print(URLS)
         #URL=list(URL[0].values())
         #URL=str(URL[0])
@@ -52,7 +52,15 @@ class scrapper_controller:
         
         prediction=self.model.predict([texto])
         
-        return prediction,texto
+        titulo=self.scrapper.obtener_titulo(URLS)
+        img=self.scrapper.obtener_imagen(URLS)
+        
+        return prediction,texto,titulo,img
     
     
     
+
+
+
+
+

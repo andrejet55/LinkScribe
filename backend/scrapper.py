@@ -54,3 +54,17 @@ class Scrapper(object):
         return text
 
 
+    def obtener_titulo(self, url: str):
+        r = requests.get(url)
+        soup = BeautifulSoup(r.text, 'html.parser')
+        results = soup.find_all(['h1'])
+        titulo = [result.text for result in results]
+        return titulo
+        
+    def obtener_imagen(self, url: str):
+
+        r = requests.get(url)
+        soup = BeautifulSoup(r.text, 'html.parser')
+        imagen_tag = soup.find('meta', attrs={'property': 'og:image'} or {'name': 'og:image'})
+        imagen_url = imagen_tag.get('content')
+        return imagen_url

@@ -4,9 +4,21 @@ from scrapper_controller import router as scrapper_router
 from fastapi import Depends, Request
 from translate import Traductor
 from scrapper import Scrapper
-
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+    allow_credentials=True,
+)
+
+
+
 
 
 async def get_model(request:Request):
